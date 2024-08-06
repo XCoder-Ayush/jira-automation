@@ -6,23 +6,18 @@ inputs:
   ticket-id:
     description: Ticket ID
     required: true
-    type: string
   comment:
     description: Actual Comment
     required: true
-    type: string
   jira-username:
     description: Username Of JIRA Account
     required: true
-    type: string
   jira-token:
     description: API Token
     required: true
-    type: string
   jira-base-url:
     description: Base URL Of JIRA Instance
     required: true
-    type: string
 
 outputs:
   ticket-exists:
