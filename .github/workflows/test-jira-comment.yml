@@ -1,0 +1,35 @@
+name: Test JIRA Comment Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticket-id:
+        description: "Ticket ID"
+        required: true
+        default: "KAN-1"
+      comment:
+        description: "Comment To Post"
+        required: true
+        default: "Hey, This Is A Test Comment."
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run JIRA Comment Action
+        id: jira-comment
+        uses: ./comment/ # Uses the action in the repository
+        with:
+          ticket-id: ${{ github.event.inputs.ticket-id }}
+          comment: ${{ github.event.inputs.comment }}
+          jira-username: ${{ secrets.JIRA_USERNAME }}
+          jira-token: ${{ secrets.JIRA_TOKEN }}
+          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+
+      - name: Check Ticket Exists Output
+        run: |
+          echo "Ticket exists: ${{ steps.jira-comment.outputs.ticket-exists }}"
