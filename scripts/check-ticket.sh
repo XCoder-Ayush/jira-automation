@@ -2,9 +2,10 @@
 
 TICKET_ID=$1
 
-response=$(curl --silent --request GET \
-  --url "${JIRA_BASE_URL}/rest/api/2/issue/${TICKET_ID}" \
-  --user "${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}")
+response=$(curl \
+  -u "${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}" \
+  -H 'Accept: application/json' \
+  "${JIRA_BASE_URL}/rest/api/2/issue/${TICKET_ID}")
 
 if echo "$response" | grep -q "\"key\":\"${TICKET_ID}\""; then
   echo "::set-output name=exists::true"
