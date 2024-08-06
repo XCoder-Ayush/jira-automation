@@ -11,6 +11,8 @@ on:
         description: "Comment To Post"
         required: true
         default: "Hey, This Is A Test Comment."
+  push:
+    branches: ["master"]
 
 jobs:
   test-action:
@@ -18,14 +20,29 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Set Variables for workflow_dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "TICKET_ID=${{ github.event.inputs.ticket-id }}" >> $GITHUB_ENV
+          echo "COMMENT=${{ github.event.inputs.comment }}" >> $GITHUB_ENV
+
+      - name: Set Variables for push
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo "TICKET_ID=KAN-1" >> $GITHUB_ENV
+          echo "COMMENT=Hey, This Is A Test Comment." >> $GITHUB_ENV
+
+      - name: Make the script executable
+        run: chmod +x ./scripts/check-ticket.sh
 
       - name: Run JIRA Comment Action
         id: jira-comment
-        uses: ./comment/ # Uses the action in the repository
+        uses: ./ # Uses the action in the repository
         with:
-          ticket-id: ${{ github.event.inputs.ticket-id }}
-          comment: ${{ github.event.inputs.comment }}
+          ticket-id: ${{ env.TICKET_ID }}
+          comment: ${{ env.COMMENT }}
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
           jira-base-url: ${{ secrets.JIRA_BASE_URL }}
