@@ -11,8 +11,6 @@ on:
         description: "Comment To Post"
         required: true
         default: "Hey, This Is A Test Comment."
-  push:
-    branches: ["master"]
 
 jobs:
   test-action:
@@ -39,7 +37,7 @@ jobs:
 
       - name: Run JIRA Comment Action
         id: jira-comment
-        uses: ./ # Uses the action in the repository
+        uses: ./comment/
         with:
           ticket-id: ${{ env.TICKET_ID }}
           comment: ${{ env.COMMENT }}
